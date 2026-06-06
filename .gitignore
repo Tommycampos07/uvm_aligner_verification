@@ -1,0 +1,47 @@
+# Simulation outputs
+work/
+transcript
+*.wlf
+*.vcd
+*.fsdb
+*.log
+*.jou
+*.pb
+*.vstf
+
+# Questa / ModelSim
+modelsim.ini
+vsim_stacktrace.vstf
+
+# VCS
+simv
+simv.daidir/
+csrc/
+ucli.key
+
+# Xcelium
+INCA_libs/
+xcelium.d/
+
+# Vivado / generic generated
+*.jou
+*.log
+*.str
+*.xpr
+*.cache/
+*.hw/
+*.ip_user_files/
+*.sim/
+*.runs/
+*.gen/
+
+# Build / generated folders
+build/
+out/
+coverage/
+reports/
+
+# Editor / OS
+.vscode/
+.DS_Store
+Thumbs.db
