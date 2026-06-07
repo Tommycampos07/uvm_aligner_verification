@@ -97,7 +97,7 @@ module tb_top;
 
   );
 
-  // Inicialización segura de señales conducidas por el TB
+  // Inicialización de señales conducidas por el TB
   initial begin
 
     apb_vif.psel    = 1'b0;
@@ -146,7 +146,7 @@ module tb_top;
 
     );
 
-    run_test();
+    run_test("aligner_testbase");
   end
 
 endmodule
