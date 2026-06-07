@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 
 // Modulo con dut, clk, instancias if (guardadas en uvm_config_db), llamada test
+// Conecta parte física con uvm
 module tb_top;
 
   import uvm_pkg::*;

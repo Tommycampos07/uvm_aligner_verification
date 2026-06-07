@@ -1,6 +1,6 @@
-class aligner_base_test extends uvm_test;
+class aligner_testbase extends uvm_test;
 
-  `uvm_component_utils(aligner_base_test)
+  `uvm_component_utils(aligner_testbase)
 
   aligner_env env;
 
@@ -18,7 +18,7 @@ class aligner_base_test extends uvm_test;
 
     env = aligner_env::type_id::create("env", this);
 
-    `uvm_info("BASE_TEST", "aligner_base_test build_phase completed", UVM_LOW)
+    `uvm_info("BASE_TEST", "aligner_testbase build_phase completed", UVM_LOW)
 
   endfunction
 
@@ -43,7 +43,7 @@ class aligner_base_test extends uvm_test;
     end
 
     phase.drop_objection(this);
-    
+
   endtask
 
 endclass

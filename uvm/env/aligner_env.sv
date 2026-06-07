@@ -2,7 +2,9 @@ class aligner_env extends uvm_env;
 
   `uvm_component_utils(aligner_env)
 
-  aligner_virtual_sequencer vseqr;
+  aligner_virtualseq vseqr;
+
+  apb_agent apb_agnt;
 
   function new(string name = "aligner_env",
 
@@ -16,15 +18,18 @@ class aligner_env extends uvm_env;
 
     super.build_phase(phase);
 
-    vseqr = aligner_virtual_sequencer::type_id::create("vseqr", this);
+    vseqr = aligner_virtualseq::type_id::create("vseqr", this);
+    apb_agnt = apb_agent::type_id::create("apb_agnt", this);
 
     `uvm_info("ENV", "aligner_env build_phase completed", UVM_LOW)
 
   endfunction
 
   virtual function void connect_phase(uvm_phase phase);
-    
+
     super.connect_phase(phase);
+
+    vseqr.apb_seqr = apb_agnt.seqr;
 
     `uvm_info("ENV", "aligner_env connect_phase completed", UVM_LOW)
   endfunction
