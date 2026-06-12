@@ -123,7 +123,7 @@ module tb_top;
     uvm_config_db #(virtual apb_if)::set(
 
       null,
-      "uvm_test_top.env.apb_agent*",
+      "uvm_test_top.env.apb_agnt*",
       "vif",
       apb_vif
 
@@ -132,7 +132,7 @@ module tb_top;
     uvm_config_db #(virtual md_if #(ALGN_DATA_WIDTH))::set(
 
       null,
-      "uvm_test_top.env.md_rx_agent*",
+      "uvm_test_top.env.md_rx_agnt*",
       "vif",
       md_rx_vif
 
@@ -141,7 +141,7 @@ module tb_top;
     uvm_config_db #(virtual md_if #(ALGN_DATA_WIDTH))::set(
 
       null,
-      "uvm_test_top.env.md_tx_agent*",
+      "uvm_test_top.env.md_tx_agnt*",
       "vif",
       md_tx_vif
 

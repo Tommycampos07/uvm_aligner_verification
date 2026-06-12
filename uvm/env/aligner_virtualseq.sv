@@ -3,6 +3,8 @@ class aligner_virtualseq extends uvm_sequencer;
   `uvm_component_utils(aligner_virtualseq)
 
   uvm_sequencer #(apb_item) apb_seqr;
+  uvm_sequencer #(md_item) md_rx_seqr;
+  uvm_sequencer #(md_item) md_tx_seqr;
 
   function new(string name = "aligner_virtualseq",
 
