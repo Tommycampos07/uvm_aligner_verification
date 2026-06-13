@@ -32,15 +32,19 @@ class aligner_testbase extends uvm_test;
 
   virtual task run_phase(uvm_phase phase);
 
+    apb_basic_seq apb_seq;
+
     phase.raise_objection(this);
 
-    `uvm_info("BASE_TEST", "Base test running. No stimulus yet.", UVM_LOW)
+    `uvm_info("TESTBASE", "Base test running", UVM_LOW)
 
-    repeat (20) begin
+    apb_seq = apb_basicseq::type_id::create("apb_seq")
 
-      #10;
+    #100ns
 
-    end
+    apb_seq.start(env.apb_agnt.seqr);
+
+    #100ns
 
     phase.drop_objection(this);
 
