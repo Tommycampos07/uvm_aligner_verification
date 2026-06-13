@@ -22,4 +22,14 @@ class apb_item extends uvm_sequence_item;
 
   endfunction
 
+  virtual function string convert2string();
+
+    return $sformatf("%s addr=0x%04h wdata=0x%08h rdata=0x%08h slverr=%0b",
+                     pwrite ? "WRITE" : "READ",
+                     paddr,
+                     pwdata,
+                     prdata,
+                     pslverr);
+  endfunction
+
 endclass

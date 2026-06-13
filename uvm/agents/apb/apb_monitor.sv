@@ -21,23 +21,24 @@ class apb_monitor extends uvm_monitor;
 
     if (!uvm_config_db #(virtual apb_if)::get(this, "", "vif", vif)) begin
 
-      `uvm_fatal("APB_MON", "No se pudo obtener apb_if desde uvm_config_db")
+      `uvm_fatal("APB_MON", "Couldn't find apb_if from uvm_config_db")
 
     end
 
   endfunction
 
   virtual task run_phase(uvm_phase phase);
+
     apb_item item;
+
+    wait (vif.reset_n === 1'b1);
 
     forever begin
 
       @(posedge vif.clk);
 
-      // Más adelante capturaremos una transacción APB cuando ocurra:
-      // psel && penable && pready
-
       if (vif.psel && vif.penable && vif.pready) begin
+
         item = apb_item::type_id::create("item");
 
         item.pwrite  = vif.pwrite;
@@ -48,7 +49,7 @@ class apb_monitor extends uvm_monitor;
 
         ap.write(item);
 
-        `uvm_info("APB_MON", "Transaccion APB observada", UVM_LOW)
+        `uvm_info("APB_MON", $sformatf("APB transfer observed", item.convert2string()), UVM_LOW)
 
       end
 
