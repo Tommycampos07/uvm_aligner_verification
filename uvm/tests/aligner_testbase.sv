@@ -4,7 +4,7 @@ class aligner_testbase extends uvm_test;
 
   aligner_env env;
 
-  function new(string name = "aligner_base_test",
+  function new(string name = "aligner_testbase",
 
                uvm_component parent = null);
 
@@ -18,13 +18,15 @@ class aligner_testbase extends uvm_test;
 
     env = aligner_env::type_id::create("env", this);
 
-    `uvm_info("BASE_TEST", "aligner_testbase build_phase completed", UVM_LOW)
+    `uvm_info("TESTBASE", "aligner_testbase build_phase completed", UVM_LOW)
 
   endfunction
 
   virtual function void end_of_elaboration_phase(uvm_phase phase);
 
     super.end_of_elaboration_phase(phase);
+
+    `uvm_info("TESTBASE", "Printing UVM topology", UVM_LOW)
 
     uvm_top.print_topology();
 
@@ -40,11 +42,15 @@ class aligner_testbase extends uvm_test;
 
     apb_seq = apb_basicseq::type_id::create("apb_seq")
 
-    #100ns
+    `uvm_info("TESTBASE", "Starting apb_basic_seq on APB sequencer", UVM_LOW)
 
     apb_seq.start(env.apb_agnt.seqr);
 
+    `uvm_info("TESTBASE", "apb_basic_seq completed", UVM_LOW)
+
     #100ns
+
+    `uvm_info("TESTBASE", "Finishing APB infrastructure", UVM_LOW)
 
     phase.drop_objection(this);
 

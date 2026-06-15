@@ -6,6 +6,8 @@ class aligner_virtualseq extends uvm_sequencer;
   uvm_sequencer #(md_item) md_rx_seqr;
   uvm_sequencer #(md_item) md_tx_seqr;
 
+  aligner_reg_block ral_model;
+
   function new(string name = "aligner_virtualseq",
 
                uvm_component parent = null);

@@ -11,6 +11,11 @@ class aligner_env extends uvm_env;
   aligner_reference_model ref_model;
   aligner_scoreboard      scb;
 
+  aligner_reg_block                 ral_model;
+  aligner_apb_adapter               apb_adapter;
+  uvm_reg_predictor #(apb_item)      apb_predictor;
+
+
   function new(string name = "aligner_env",
 
                uvm_component parent = null);
@@ -31,6 +36,12 @@ class aligner_env extends uvm_env;
     ref_model = aligner_reference_model::type_id::create("ref_model", this);
     scb       = aligner_scoreboard::type_id::create("scb", this)
 
+    ral_model = aligner_reg_block::type_id::create("ral_model", this);
+    ral_model.build();
+
+    apb_adapter = aligner_apb_adapter::type_id::create("apb_adapter");
+
+    apb_predictor = uvm_reg_predictor #(apb_item)::type_id::create("apb_predictor", this);
 
     `uvm_info("ENV", "aligner_env build_phase completed", UVM_LOW)
 
@@ -47,6 +58,14 @@ class aligner_env extends uvm_env;
     md_rx_agnt.mon.ap.connect(ref_model.rx_export);
     ref_model.expected_ap.connect(scb.expected_export);
     md_tx_agnt.mon.ap.connect(scb.actual_export);
+
+    ral_model.apb_map.set_sequencer(apb_agnt.seqr, apb_adapter);
+
+    apb_predictor.map     = ral_model.apb_map;
+    apb_predictor.adapter = apb_adapter;
+    apb_agnt.mon.ap.connect(apb_predictor.bus_in);
+
+    vseqr.ral_model = ral_model;
 
     `uvm_info("ENV", "aligner_env connect_phase completed", UVM_LOW)
   endfunction

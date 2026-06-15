@@ -23,6 +23,11 @@ package aligner_pkg;
   `include "agents/md/md_tx_monitor.sv"
   `include "agents/md/md_tx_agent.sv"
 
+  `include "seqs/apb_basic_seq.sv"
+
+  `include "ral/aligner_apb_adapter.sv"
+  `include "ral/aligner_reg_block.sv"
+
   `include "env/aligner_virtualseq.sv"
   `include "env/aligner_reference_model.sv"
   `include "env/aligner_scoreboard.sv"
