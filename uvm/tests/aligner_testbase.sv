@@ -34,23 +34,25 @@ class aligner_testbase extends uvm_test;
 
   virtual task run_phase(uvm_phase phase);
 
-    ral_basic_vseq ral_seq;
+    legal_alignment_vseq legal_seq;
 
     phase.raise_objection(this);
 
-    `uvm_info("TESTBASE", "Starting RAL infrastructure test", UVM_LOW)
+    `uvm_info("TESTBASE", "Starting legal alignment smoke test", UVM_LOW)
 
-    #100ns
+    #100ns;
 
+    legal_seq = legal_alignment_vseq::type_id::create("legal_seq");
 
-    ral_seq = ral_basic_vseq::type_id::create("ral_seq");
-    ral_seq.start(env.vseqr);
+    `uvm_info("TESTBASE", "Starting legal_alignment_vseq on virtual sequencer", UVM_LOW)
 
-    `uvm_info("TESTBASE", "ral_basic_seq completed", UVM_LOW)
+    legal_seq.start(env.vseqr);
 
-    #100ns
+    `uvm_info("TESTBASE", "legal_alignment_vseq completed", UVM_LOW)
 
-    `uvm_info("TESTBASE", "Finishing RAL infrastructure test", UVM_LOW)
+    #100ns;
+
+    `uvm_info("TESTBASE", "Finishing legal alignment smoke test", UVM_LOW)
 
     phase.drop_objection(this);
 
