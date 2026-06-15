@@ -34,23 +34,23 @@ class aligner_testbase extends uvm_test;
 
   virtual task run_phase(uvm_phase phase);
 
-    apb_basic_seq apb_seq;
+    ral_basic_vseq ral_seq;
 
     phase.raise_objection(this);
 
-    `uvm_info("TESTBASE", "Base test running", UVM_LOW)
-
-    apb_seq = apb_basicseq::type_id::create("apb_seq")
-
-    `uvm_info("TESTBASE", "Starting apb_basic_seq on APB sequencer", UVM_LOW)
-
-    apb_seq.start(env.apb_agnt.seqr);
-
-    `uvm_info("TESTBASE", "apb_basic_seq completed", UVM_LOW)
+    `uvm_info("TESTBASE", "Starting RAL infrastructure test", UVM_LOW)
 
     #100ns
 
-    `uvm_info("TESTBASE", "Finishing APB infrastructure", UVM_LOW)
+
+    ral_seq = ral_basic_vseq::type_id::create("ral_seq");
+    ral_seq.start(env.vseqr);
+
+    `uvm_info("TESTBASE", "ral_basic_seq completed", UVM_LOW)
+
+    #100ns
+
+    `uvm_info("TESTBASE", "Finishing RAL infrastructure test", UVM_LOW)
 
     phase.drop_objection(this);
 

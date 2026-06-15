@@ -29,6 +29,10 @@ package aligner_pkg;
   `include "ral/aligner_reg_block.sv"
 
   `include "env/aligner_virtualseq.sv"
+
+  `include "seqs/apb_basic_seq.sv"
+  `include "seqs/ral_basic_vseq.sv"
+
   `include "env/aligner_reference_model.sv"
   `include "env/aligner_scoreboard.sv"
   `include "env/aligner_env.sv"
