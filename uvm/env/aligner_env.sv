@@ -11,10 +11,12 @@ class aligner_env extends uvm_env;
   aligner_reference_model ref_model;
   aligner_scoreboard      scb;
 
+  aligner_coverage rx_cov;
+  aligner_coverage tx_cov;
+
   aligner_reg_block                 ral_model;
   aligner_apb_adapter               apb_adapter;
   uvm_reg_predictor #(apb_item)      apb_predictor;
-
 
   function new(string name = "aligner_env",
 
@@ -29,12 +31,16 @@ class aligner_env extends uvm_env;
     super.build_phase(phase);
 
     vseqr = aligner_virtualseq::type_id::create("vseqr", this);
+
     apb_agnt = apb_agent::type_id::create("apb_agnt", this);
     md_rx_agent = md_rx_agent::type_id::create("md_rx_agnt", this)
     md_tx_agent = md_tx_agent::type_id::create("md_tx_agnt", this)
 
     ref_model = aligner_reference_model::type_id::create("ref_model", this);
     scb       = aligner_scoreboard::type_id::create("scb", this)
+
+    rx_cov = aligner_coverage::type_id::create("rx_cov", this);
+    tx_cov = aligner_coverage::type_id::create("tx_cov", this);
 
     ral_model = aligner_reg_block::type_id::create("ral_model", this);
     ral_model.build();
@@ -58,6 +64,9 @@ class aligner_env extends uvm_env;
     md_rx_agnt.mon.ap.connect(ref_model.rx_export);
     ref_model.expected_ap.connect(scb.expected_export);
     md_tx_agnt.mon.ap.connect(scb.actual_export);
+
+    md_rx_agnt.mon.ap.connect(rx_cov.analysis_export);
+    md_tx_agnt.mon.ap.connect(tx_cov.analysis_export);
 
     ral_model.apb_map.set_sequencer(apb_agnt.seqr, apb_adapter);
 

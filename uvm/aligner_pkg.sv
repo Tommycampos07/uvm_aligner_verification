@@ -37,8 +37,10 @@ package aligner_pkg;
 
   `include "env/aligner_reference_model.sv"
   `include "env/aligner_scoreboard.sv"
+  `include "env/aligner_coverage.sv"
   `include "env/aligner_env.sv"
 
   `include "tests/aligner_testbase.sv"
+  `include "tests/aligner_legal_alignment_test.sv"
 
 endpackage
