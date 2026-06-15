@@ -71,7 +71,7 @@ class legal_alignment_vseq extends uvm_sequence;
                 UVM_LOW)
     end
 
-    uvm_info("LEGAL_ALIGNMENT_VSEQ", "Starting MD RX basic traffic", UVM_LOW)
+    `uvm_info("LEGAL_ALIGNMENT_VSEQ", "Starting MD RX basic traffic", UVM_LOW)
 
     md_seq = md_rx_basic_seq::type_id::create("md_seq");
     md_seq.start(p_sequencer.md_rx_seqr);
