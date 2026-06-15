@@ -2,9 +2,15 @@ class md_rx_basic_seq extends uvm_sequence #(md_item);
 
   `uvm_object_utils(md_rx_basic_seq)
 
-  function new(string name = "md_rx_basic_seq");
+  int unsigned num_items;
+  bit fixed_traffic;
 
+  function new(string name = "md_rx_basic_seq");
+  
     super.new(name);
+
+    num_items     = 7;
+    fixed_traffic = 1'b1;
 
   endfunction
 
@@ -12,8 +18,31 @@ class md_rx_basic_seq extends uvm_sequence #(md_item);
 
     `uvm_info("MD_RX_BASIC_SEQ", "Starting basic MD RX sequence", UVM_LOW)
 
-    // Legal transfers for a 32-bit MD bus.
-    // These are not yet randomized. They are deterministic smoke traffic.
+    void'($value$plusargs("NUM_ITEMS=%0d", num_items));
+    void'($value$plusargs("FIXED_TRAFFIC=%0d", fixed_traffic));
+
+    `uvm_info("MD_RX_BASIC_SEQ",
+
+              $sformatf("Sequence configuration: NUM_ITEMS=%0d FIXED_TRAFFIC=%0b",
+                        num_items, fixed_traffic),
+              UVM_LOW)
+
+    if (fixed_traffic) begin
+
+      send_fixed_traffic();
+
+    end
+    else begin
+
+      send_random_traffic(num_items);
+
+    end
+
+    `uvm_info("MD_RX_BASIC_SEQ", "Basic MD RX sequence completed", UVM_LOW)
+
+  endtask
+
+  virtual task send_fixed_traffic();
 
     send_md_item(32'hAABB_CCDD, 2'd0, 3'd4);
     send_md_item(32'h1122_3344, 2'd0, 3'd2);
@@ -23,7 +52,50 @@ class md_rx_basic_seq extends uvm_sequence #(md_item);
     send_md_item(32'h1234_5678, 2'd2, 3'd1);
     send_md_item(32'h8765_4321, 2'd3, 3'd1);
 
-    `uvm_info("MD_RX_BASIC_SEQ", "Basic MD RX sequence completed", UVM_LOW)
+  endtask
+
+  virtual task send_random_traffic(int unsigned n);
+
+    md_item item;
+
+    for (int unsigned i = 0; i < n; i++) begin
+
+      item = md_item::type_id::create($sformatf("random_md_item_%0d", i));
+
+      start_item(item);
+
+      if (!item.randomize() with {
+
+        err == 0;
+
+        size inside {1, 2, 4};
+
+        if (size == 1) {
+          offset inside {0, 1, 2, 3};
+        }
+
+        if (size == 2) {
+          offset inside {0, 2};
+        }
+
+        if (size == 4) {
+          offset == 0;
+        }
+      }) begin
+
+        `uvm_fatal("MD_RX_BASIC_SEQ", "Failed to randomize MD RX item")
+
+      end
+
+      finish_item(item);
+
+      `uvm_info("MD_RX_BASIC_SEQ",
+
+                $sformatf("Sent random MD RX item: data=0x%08h offset=%0d size=%0d",
+                          item.data, item.offset, item.size),
+                UVM_LOW)
+
+    end
 
   endtask
 
