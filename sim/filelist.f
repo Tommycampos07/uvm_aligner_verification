@@ -1,3 +1,5 @@
++incdir+/mnt/vol_NFS_rh003/tools/vcs/R-2020.12-SP2/etc/uvm-1.2
+
 +incdir+../rtl
 +incdir+../tb
 +incdir+../tb/interfaces

@@ -49,7 +49,7 @@ class apb_monitor extends uvm_monitor;
 
         ap.write(item);
 
-        `uvm_info("APB_MON", $sformatf("APB transfer observed", item.convert2string()), UVM_LOW)
+        `uvm_info("APB_MON", $sformatf("APB transfer observed: %s", item.convert2string()), UVM_LOW)
 
       end
 
