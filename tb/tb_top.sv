@@ -147,7 +147,7 @@ module tb_top;
 
     );
 
-    run_test("aligner_testbase");
+    run_test("aligner_legal_alignment_test");
   end
 
 endmodule
