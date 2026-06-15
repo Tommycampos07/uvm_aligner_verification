@@ -1,4 +1,4 @@
-// Conduce objetos del sequencer al dut mediante vif
+// Conduce objetos del sequencer al DUT mediante vif
 class apb_driver extends uvm_driver #(apb_item);
 
   `uvm_component_utils(apb_driver)
@@ -6,28 +6,22 @@ class apb_driver extends uvm_driver #(apb_item);
   virtual apb_if vif;
 
   function new(string name = "apb_driver", uvm_component parent = null);
-
     super.new(name, parent);
-
   endfunction
 
   virtual function void build_phase(uvm_phase phase);
-
     super.build_phase(phase);
 
     if (!uvm_config_db #(virtual apb_if)::get(this, "", "vif", vif)) begin
-
       `uvm_fatal("APB_DRV", "Couldn't find apb_if from uvm_config_db")
-
     end
-
   endfunction
 
   virtual task run_phase(uvm_phase phase);
 
     apb_item req;
 
-    // Estado inicial seguro
+    // Safe initial state
     vif.psel    <= 1'b0;
     vif.penable <= 1'b0;
     vif.pwrite  <= 1'b0;
@@ -41,20 +35,21 @@ class apb_driver extends uvm_driver #(apb_item);
         
       seq_item_port.get_next_item(req);
 
-      drive_transfer(req)
+      drive_transfer(req);
 
-      `uvm_info("APB_DRV", $sformatf("APB transfer completed: %s", req.convert2string()), UVM_LOW)
-
-      // Por ahora no manejamos el protocolo real.
-      // Luego aquí implementaremos write/read APB.
+      `uvm_info("APB_DRV",
+                $sformatf("APB transfer completed: %s", req.convert2string()),
+                UVM_LOW)
 
       seq_item_port.item_done();
+
     end
+
   endtask
 
   virtual task drive_transfer(apb_item item);
 
-    //Setup
+    // Setup phase
     @(posedge vif.clk);
     vif.psel    <= 1'b1;
     vif.penable <= 1'b0;
@@ -62,20 +57,20 @@ class apb_driver extends uvm_driver #(apb_item);
     vif.paddr   <= item.paddr;
     vif.pwdata  <= item.pwdata;
 
-    //Access
+    // Access phase
     @(posedge vif.clk);
     vif.penable <= 1'b1;
 
-    //Esperar a que el esclavo indique que se completó la transferencia 
+    // Wait until slave completes the transfer
     do begin
       @(posedge vif.clk);
     end while (vif.pready !== 1'b1);
 
-    //Captura respuesta
+    // Capture response
     item.prdata  = vif.prdata;
     item.pslverr = vif.pslverr;
 
-    //IDLE
+    // Idle
     vif.psel    <= 1'b0;
     vif.penable <= 1'b0;
     vif.pwrite  <= 1'b0;
