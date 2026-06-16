@@ -10,7 +10,7 @@ class md_tx_driver extends uvm_driver #(md_item);
   int unsigned tx_ready_random_pct;
 
   function new(string name = "md_tx_driver",
-
+  
                uvm_component parent = null);
                
     super.new(name, parent);
@@ -45,6 +45,7 @@ class md_tx_driver extends uvm_driver #(md_item);
                         tx_ready_low_cycles,
                         tx_ready_random_pct),
               UVM_LOW)
+
   endfunction
 
   virtual task run_phase(uvm_phase phase);
@@ -103,6 +104,7 @@ class md_tx_driver extends uvm_driver #(md_item);
       repeat (tx_ready_high_cycles) begin
 
         @(posedge vif.clk);
+
         vif.ready <= 1'b1;
         vif.err   <= 1'b0;
 
@@ -111,6 +113,7 @@ class md_tx_driver extends uvm_driver #(md_item);
       repeat (tx_ready_low_cycles) begin
 
         @(posedge vif.clk);
+
         vif.ready <= 1'b0;
         vif.err   <= 1'b0;
 
@@ -143,7 +146,6 @@ class md_tx_driver extends uvm_driver #(md_item);
         vif.ready <= 1'b0;
 
       end
-
 
       vif.err <= 1'b0;
 

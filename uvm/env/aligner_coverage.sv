@@ -2,51 +2,43 @@ class aligner_coverage extends uvm_subscriber #(md_item);
 
   `uvm_component_utils(aligner_coverage)
 
-  // Última transacción recibida
-  md_item tr;
+  md_item cov_item;
 
   covergroup md_cg;
 
     option.per_instance = 1;
 
-    cp_size: coverpoint tr.size {
-      bins size_1 = {1};
-      bins size_2 = {2};
-      bins size_4 = {4};
-      illegal_bins illegal_size_0 = {0};
-      illegal_bins illegal_other  = {[5:7]};
+    cp_size: coverpoint cov_item.size {
+      bins byte_access     = {1};
+      bins halfword_access = {2};
+      bins word_access     = {4};
+      illegal_bins zero_size = {0};
     }
 
-    cp_offset: coverpoint tr.offset {
+    cp_offset: coverpoint cov_item.offset {
       bins offset_0 = {0};
       bins offset_1 = {1};
       bins offset_2 = {2};
       bins offset_3 = {3};
     }
 
-    cp_size_offset: cross cp_size, cp_offset {
-      bins legal_size1_offset0 = binsof(cp_size.size_1) && binsof(cp_offset.offset_0);
-      bins legal_size1_offset1 = binsof(cp_size.size_1) && binsof(cp_offset.offset_1);
-      bins legal_size1_offset2 = binsof(cp_size.size_1) && binsof(cp_offset.offset_2);
-      bins legal_size1_offset3 = binsof(cp_size.size_1) && binsof(cp_offset.offset_3);
-
-      bins legal_size2_offset0 = binsof(cp_size.size_2) && binsof(cp_offset.offset_0);
-      bins legal_size2_offset2 = binsof(cp_size.size_2) && binsof(cp_offset.offset_2);
-
-      bins legal_size4_offset0 = binsof(cp_size.size_4) && binsof(cp_offset.offset_0);
-
-      illegal_bins illegal_size2_offset1 = binsof(cp_size.size_2) && binsof(cp_offset.offset_1);
-      illegal_bins illegal_size2_offset3 = binsof(cp_size.size_2) && binsof(cp_offset.offset_3);
-
-      illegal_bins illegal_size4_offset1 = binsof(cp_size.size_4) && binsof(cp_offset.offset_1);
-      illegal_bins illegal_size4_offset2 = binsof(cp_size.size_4) && binsof(cp_offset.offset_2);
-      illegal_bins illegal_size4_offset3 = binsof(cp_size.size_4) && binsof(cp_offset.offset_3);
+    cp_err: coverpoint cov_item.err {
+      bins no_error = {0};
+      bins error    = {1};
     }
+
+    cp_data_lsb: coverpoint cov_item.data[7:0] {
+      bins low_values  = {[8'h00:8'h3F]};
+      bins mid_values  = {[8'h40:8'hBF]};
+      bins high_values = {[8'hC0:8'hFF]};
+    }
+
+    cross_size_offset: cross cp_size, cp_offset;
 
   endgroup
 
   function new(string name = "aligner_coverage",
-
+  
                uvm_component parent = null);
 
     super.new(name, parent);
@@ -57,20 +49,29 @@ class aligner_coverage extends uvm_subscriber #(md_item);
 
   virtual function void write(md_item t);
 
-    if (!$cast(tr, t.clone())) begin
-
-      `uvm_error("COV", "Failed to clone md_item")
-
-      return;
-
-    end
-
+    cov_item = t;
     md_cg.sample();
 
     `uvm_info("COV",
-    
-              $sformatf("Sampled MD coverage: data=0x%08h offset=%0d size=%0d err=%0b",
-                        tr.data, tr.offset, tr.size, tr.err),
+
+              $sformatf("Sampled MD coverage: data=0x%08h offset=%0d size=%0d err=%0b coverage=%0.2f%%",
+                        t.data,
+                        t.offset,
+                        t.size,
+                        t.err,
+                        md_cg.get_inst_coverage()),
+              UVM_LOW)
+
+  endfunction
+
+  virtual function void report_phase(uvm_phase phase);
+
+    super.report_phase(phase);
+
+    `uvm_info("COV",
+
+              $sformatf("Final MD coverage = %0.2f%%",
+                        md_cg.get_inst_coverage()),
               UVM_LOW)
 
   endfunction

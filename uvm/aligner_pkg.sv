@@ -40,5 +40,6 @@ package aligner_pkg;
 
   `include "tests/aligner_testbase.sv"
   `include "tests/aligner_legal_alignment_test.sv"
+  `include "tests/aligner_tx_backpressure_test.sv"
 
 endpackage

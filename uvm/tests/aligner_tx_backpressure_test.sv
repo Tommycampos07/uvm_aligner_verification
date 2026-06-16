@@ -3,11 +3,10 @@ class aligner_tx_backpressure_test extends aligner_testbase;
   `uvm_component_utils(aligner_tx_backpressure_test)
 
   function new(string name = "aligner_tx_backpressure_test",
-
                uvm_component parent = null);
 
     super.new(name, parent);
-    
+
   endfunction
 
   virtual task run_phase(uvm_phase phase);
@@ -26,7 +25,7 @@ class aligner_tx_backpressure_test extends aligner_testbase;
 
     `uvm_info("TX_BACKPRESSURE_TEST", "TX backpressure test completed", UVM_LOW)
 
-    #200ns;
+    #300ns;
 
     phase.drop_objection(this);
 
