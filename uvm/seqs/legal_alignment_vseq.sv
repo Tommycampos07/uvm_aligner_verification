@@ -13,6 +13,7 @@ class legal_alignment_vseq extends uvm_sequence;
 
     uvm_status_e   status;
     uvm_reg_data_t data;
+    int unsigned drain_time_ns;
 
     md_rx_basic_seq md_seq;
 
@@ -78,9 +79,18 @@ class legal_alignment_vseq extends uvm_sequence;
 
     `uvm_info("LEGAL_ALIGNMENT_VSEQ", "MD RX basic traffic completed", UVM_LOW)
 
-    #200ns;
+    drain_time_ns = 200;
 
-    `uvm_info("LEGAL_ALIGNMENT_VSEQ", "Reading STATUS register", UVM_LOW)
+    void'($value$plusargs("DRAIN_TIME_NS=%0d", drain_time_ns));
+
+    `uvm_info("LEGAL_ALIGNMENT_VSEQ",
+            
+            $sformatf("Waiting %0d ns for TX drain", drain_time_ns),
+            UVM_LOW)
+
+#(drain_time_ns * 1ns);
+
+`uvm_info("LEGAL_ALIGNMENT_VSEQ", "Reading STATUS register", UVM_LOW)
 
     p_sequencer.ral_model.STATUS.read(
       status,
